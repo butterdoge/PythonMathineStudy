@@ -92,7 +92,7 @@ partial_y_train = y_train[10000:]
 
 history = model.fit(partial_x_train,
                     partial_y_train,
-                    epochs=20,
+                    epochs=50,
                     #回调次数。
                     batch_size=512,
                     #每一轮批输入的数目数。
@@ -104,23 +104,19 @@ history_dict = history.history
 history_dict.keys()
 #获取内部有哪些变量。
 
+from keras import backend as K
+K.clear_session()
+from numba import cuda
+cuda.select_device(0)
+cuda.close()
+
 import matplotlib.pyplot as plt
 #引入画图函数。
 
-acc = history.history['acc']
-val_acc = history.history['val_acc']
-loss = history.history['loss']
-val_loss = history.history['val_loss']
 
-epochs = range(1, len(acc) + 1)
 
-# "bo" is for "blue dot"
-plt.plot(epochs, loss, 'bo', label='Training loss')
-# b is for "solid blue line"
-plt.plot(epochs, val_loss, 'b', label='Validation loss')
-plt.title('Training and validation loss')
-plt.xlabel('Epochs')
-plt.ylabel('Loss')
-plt.legend()
-
-plt.show()
+from keras import backend as K
+import gc
+del model
+gc.collect()
+K.clear_session()

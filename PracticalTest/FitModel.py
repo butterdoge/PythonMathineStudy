@@ -8,6 +8,12 @@ Created on Sat Oct 31 19:37:42 2020
 该py文件用于基于VGG的特征提取分类。
 @author: 23288
 """
+
+#import tensorflow as tf
+#gpus= tf.config.experimental.list_physical_devices('GPU')
+#tf.config.experimental.set_memory_growth(gpus[0], True)
+ 
+ 
 import matplotlib.pyplot as plt
 from keras import optimizers
 from keras import layers
@@ -60,16 +66,20 @@ def extract_features(directory, sample_count):
             break
         # 直到超出提供的数据容量为止，避免重复图像被载入。
     return features, labels
-# 最后返回的是铺平flatten的张量。
+# 最后返回的是多维度张量。（就是还没flatten）
 
 
 train_features, train_labels = extract_features(train_dir, 750)
 # 共350+400个训练数据。
-validation_features, validation_labels = extract_features(validation_dir, 300)
-# 共100+200个检验数据。
-test_features, test_labels = extract_features(test_dir, 250)
-# 共50+200个验证数据。
+validation_features, validation_labels = extract_features(validation_dir, 250)
+# 共250个validation数据
+test_features, test_labels = extract_features(test_dir, 300)
+# 共300个test数据
 
+train_features = np.reshape(train_features, (750, 4 * 4 * 512))
+validation_features = np.reshape(validation_features, (250, 4 * 4 * 512))
+test_features = np.reshape(test_features, (300, 4 * 4 * 512))
+#拉平处理
 
 model = models.Sequential()
 model.add(layers.Dense(256, activation='relu', input_dim=4 * 4 * 512))
